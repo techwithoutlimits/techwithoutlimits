@@ -2,7 +2,7 @@ const { Client, LogLevel } = require("@notionhq/client");
 
 const { NOTION_API_KEY, NOTION_DATABASE_ID } = process.env;
 
-async function addEmail(email) {
+async function addData(firstname, lastname, email, phonenumber) {
   // Initialize Notion client
   const notion = new Client({
     auth: NOTION_API_KEY,
@@ -18,6 +18,33 @@ async function addEmail(email) {
           {
             text: {
               content: email,
+            },
+          },
+        ],
+      },
+      "First Name": {
+        rich_text: [
+          {
+            text: {
+              content: firstname,
+            },
+          },
+        ],
+      },
+      "Last Name": {
+        rich_text: [
+          {
+            text: {
+              content: lastname,
+            },
+          },
+        ],
+      },
+      "Phone Number": {
+        rich_text: [
+          {
+            text: {
+              content: phonenumber,
             },
           },
         ],
@@ -49,12 +76,12 @@ module.exports.handler = async function (event, context) {
   }
 
   // Validate the email
-  const { email } = body;
+  const { email, phonenumber, firstname, lastname } = body;
   // if (!validateEmail(email)) {
   //   return { statusCode: 400, body: "Email is not valid" };
   // }
 
   // Store email in Notion
-  await addEmail(email);
+  await addData(firstname, lastname, email, phonenumber);
   return { statusCode: 200, body: "ok" };
 };
