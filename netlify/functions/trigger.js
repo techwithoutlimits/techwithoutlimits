@@ -1,9 +1,7 @@
 const { Client, LogLevel } = require("@notionhq/client");
-
-const { NOTION_API_KEY, NOTION_DATABASE_ID } = process.env;
+const { NOTION_API_KEY, NOTION_DATABASE_ID, AIRTABLE_API_KEY } = process.env;
 
 async function addData(firstname, lastname, email, phonenumber) {
-  // Initialize Notion client
   const notion = new Client({
     auth: NOTION_API_KEY,
     logLevel: LogLevel.DEBUG,
@@ -51,13 +49,39 @@ async function addData(firstname, lastname, email, phonenumber) {
       },
     },
   });
-}
+  // var myHeaders = new Headers();
+  // myHeaders.append("Authorization", `Bearer ${AIRTABLE_API_KEY}`);
+  // myHeaders.append("Content-Type", "application/json");
 
-// function validateEmail(email) {
-//   const re =
-//     /^(([^&lt;&gt;()[\\]\\\\.,;:\\s@&quot;]+(\\.[^&lt;&gt;()[\\]\\\\.,;:\\s@&quot;]+)*)|(&quot;.+&quot;))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/;
-//   return re.test(String(email).toLowerCase());
-// }
+  // const data = {
+  //   records: [
+  //     {
+  //       fields: {
+  //         "First Name": `${firstname}`,
+  //         "Last Name": `${lastname}`,
+  //         Email: `${email}`,
+  //         "Phone Number": `${phonenumber}`,
+  //       },
+  //     },
+  //   ],
+  // };
+  // const raw = JSON.stringify(data);
+  // const requestOptions = {
+  //   method: "POST",
+  //   headers: myHeaders,
+  //   body: raw,
+  //   redirect: "follow",
+  // };
+  // await fetch(
+  //   `https://api.airtable.com/v0/apptNOU829wbHRhds/tblrAlZhiIugLtEry`,
+  //   requestOptions
+  // );
+  // await fetch(`https://hook.us1.make.com/521327sw3df9xzog8s1kwutoq1wwlxgf`, {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: raw,
+  // });
+}
 
 module.exports.handler = async function (event, context) {
   // Check the request method
@@ -75,13 +99,7 @@ module.exports.handler = async function (event, context) {
     };
   }
 
-  // Validate the email
   const { email, phonenumber, firstname, lastname } = body;
-  // if (!validateEmail(email)) {
-  //   return { statusCode: 400, body: "Email is not valid" };
-  // }
-
-  // Store email in Notion
   await addData(firstname, lastname, email, phonenumber);
   return { statusCode: 200, body: "ok" };
 };
